@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>好物基地 - FB直播專用小編神器 v7.0</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+            background-color: #f1f5f9;
+            color: #1e293b;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #0f172a;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+        .wrapper {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 20px;
+        }
+        .main-content {
+            flex: 1.2;
+            min-width: 0;
+        }
+        .sidebar {
+            flex: 0.8;
+            min-width: 0;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+        }
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            color: #0f172a;
+            border-left: 5px solid #1877f2;
+            padding-left: 10px;
+            margin-bottom: 15px;
+        }
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+        .form-group {
+            flex: 1;
+            margin-bottom: 12px;
+        }
+        .form-group.full {
+            width: 100%;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            color: #334155;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        input[type="text"]:focus, textarea:focus {
+            border-color: #1877f2;
+            box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1);
+            outline: none;
+        }
+        /* 結帳流程專用 */
+        textarea.checkout-box {
+            height: 320px;
+            resize: vertical;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+        }
+        /* 臨時記事本專用 */
+        textarea.notebook {
+            height: 220px;
+            resize: vertical;
+            line-height: 1.6;
+            font-size: 1rem;
+            background-color: #fffde7;
+            border: 1px solid #eab308;
+        }
+        textarea.notebook:focus {
+            border-color: #eab308;
+            box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.1);
+        }
+        .preview-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        .preview-box {
+            background-color: #f8fafc;
+            border: 1px dashed #94a3b8;
+            padding: 14px;
+            border-radius: 6px;
+            min-height: 50px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 0.95rem;
+            color: #0f172a;
+            line-height: 1.6;
+            font-family: monospace;
+        }
+        .copy-btn {
+            display: block;
+            width: 100%;
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 12px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: #166fe5;
+        }
+        .btn-lottery { background-color: #e41e3f; }
+        .btn-lottery:hover { background-color: #c21833; }
+        .btn-monster { background-color: #2bae66; }
+        .btn-monster:hover { background-color: #228b51; }
+        .btn-notebook { background-color: #eab308; color: #0f172a; }
+        .btn-notebook:hover { background-color: #ca8a04; }
+        .btn-close-order { background-color: #ff9800; color: white; }
+        .btn-close-order:hover { background-color: #e65100; }
+        .btn-checkout { background-color: #059669; color: white; }
+        .btn-checkout:hover { background-color: #047857; }
+        
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            flex: 1;
+            min-width: 130px;
+            padding: 10px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+        }
+        .btn-add { background-color: #475569; color: white; }
+        .btn-add:hover { background-color: #334155; }
+        .btn-clear { background-color: #cbd5e1; color: #475569; }
+        .btn-clear:hover { background-color: #94a3b8; color: #1e293b; }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            display: none;
+            z-index: 1000;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 900px) {
+            .wrapper {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🚀 好物基地直播快貼工具 (FB優化版)</h1>
+
+    <div class="wrapper">
+        <div class="main-content">
+            
+            <div class="card">
+                <h2>✨ 商品下單規則 (可累計多個商品)</h2>
+                <div class="form-group full">
+                    <label for="prodName">📦 商品名稱：</label>
+                    <input type="text" id="prodName" value="" placeholder="例如：閃電五連鞭" onclick="this.select()">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="prodKeyword">🔑 喊單關鍵字：</label>
+                        <input type="text" id="prodKeyword" value="" placeholder="例如：A11" onclick="this.select()">
+                    </div>
+                    <div class="form-group">
+                        <label for="prodPrice">💰 直播限定炸裂價：</label>
+                        <input type="text" id="prodPrice" value="" placeholder="例如：1880" onclick="this.select()">
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="action-btn btn-add" onclick="addProduct()">➕ 新增商品選項</button>
+                    <button class="action-btn btn-close-order" onclick="generateCloseOrderAnnounce()">📢 發送商品結單公告</button>
+                    <button class="action-btn btn-clear" onclick="clearProducts()">❌ 清空商品名單</button>
+                </div>
+                
+                <div class="preview-label">FB聊天室發送預覽：</div>
+                <div class="preview-box" id="productPreview"></div>
+                <button class="copy-btn" onclick="copyTextFromDiv('productPreview')">📋 複製商品文案</button>
+            </div>
+
+            <div class="card">
+                <h2 id="monsterTitle">✨ 抽獎福利</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="monsterKeyword">🔑 抽獎關鍵字：</label>
+                        <input type="text" id="monsterKeyword" value="" placeholder="例如：充電怪獸" oninput="updateMonster()" onclick="this.select()">
+                    </div>
+                    <div class="form-group">
+                        <label for="monsterGift">🎁 本輪好禮/規格：</label>
+                        <input type="text" id="monsterGift" value="" placeholder="例如：充電怪獸 (小貨車)" oninput="updateMonster()" onclick="this.select()">
+                    </div>
+                </div>
+                
+                <div class="preview-label">FB聊天室發送預覽：</div>
+                <div class="preview-box" id="monsterPreview"></div>
+                <button class="copy-btn btn-monster" onclick="copyTextFromDiv('monsterPreview')">📋 複製抽獎文案</button>
+            </div>
+
+            <div class="card">
+                <h2>✨ 得獎名單公佈 (最新得主排第一)</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="giftName">🎁 剛抽出的獎品：</label>
+                        <input type="text" id="giftName" value="" placeholder="例如：掃地機器人" onclick="this.select()">
+                    </div>
+                    <div class="form-group">
+                        <label for="winnerName">👤 得獎者暱稱：</label>
+                        <input type="text" id="winnerName" value="" placeholder="例如：Jen Tsung Hsieh" onclick="this.select()">
+                    </div>
+                </div>
+                
+                <div class="action-row">
+                    <button class="action-btn btn-add" onclick="addWinner()">➕ 新增到累計名單</button>
+                    <button class="action-btn btn-clear" onclick="clearWinners()">❌ 清空重來</button>
+                </div>
+                
+                <div class="preview-label">FB聊天室發送預覽：</div>
+                <div class="preview-box" id="lotteryPreview"></div>
+                <button class="copy-btn btn-lottery" onclick="copyTextFromDiv('lotteryPreview')">📋 複製全體得獎公告</button>
+            </div>
+
+        </div>
+
+        <div class="sidebar">
+            
+            <div class="card" style="border-color: #059669;">
+                <h2 style="border-left-color: #059669;">🛒 指定結帳流程公告 (內容可改)</h2>
+                <div class="form-group full">
+                    <label for="checkoutTemplate">📝 結帳引導內文：</label>
+                    <textarea id="checkoutTemplate" class="checkout-box">🛒 【好物基地】唯一指定結帳流程
+
+第 1 步｜等待系統私訊
+喊單結束後請稍等，等商品「結單」後，系統會自動發送私訊給您。
+⚠️ 注意：商品結單後才會出現在購物車喔！
+
+第 2 步｜點擊連結登入
+點擊私訊內的連結，或直接點傳送門 👉 https://lnk.bio/gbase
+從哪個 APP 喊單，就選哪一個 APP 登入（FB購物車 / 抖音購物車）。
+(FB 粉絲團也可點【聯絡我們】；抖音可點【頻道簡介欄連結】)
+
+第 3 步｜確認並完成去買單
+確認購物車內容無誤，跟著指示填寫資料、完成付款即可！
+
+❓ 訂單有疑問、需要修改？
+直播結束後請不用擔心，歡迎隨時聯繫客服，小幫手會依序回覆！
+🟢 好物基地官方 LINE ID： @530pdsjq （記得加 @ 喔）</textarea>
+                </div>
+                <button class="copy-btn btn-checkout" onclick="copyTextFromInput('checkoutTemplate')">📋 一鍵複製結帳流程</button>
+            </div>
+
+            <div class="card" style="border-color: #eab308;">
+                <h2 style="border-left-color: #eab308;">📝 直播臨時備忘錄</h2>
+                <div class="form-group full">
+                    <label for="customNotes">💡 隨手記（臨時公告、工商、備註內容）：</label>
+                    <textarea id="customNotes" class="notebook" placeholder="在這裡打字可以臨時記錄事情...\n例如：\n⚠️ 本場免運倒數 10 分鐘！\n⚠️ 剛才的 A12 外套已售罄，請勿再追加！"></textarea>
+                </div>
+                <button class="copy-btn btn-notebook" onclick="copyTextFromInput('customNotes')">📋 一鍵複製備忘錄內容</button>
+            </div>
+            
+        </div>
+    </div>
+
+<div id="toast" class="toast">✨ 已複製到剪貼簿！</div>
+
+<script>
+    let productList = [];
+    let winnerList = [];
+
+    // 1. 新增商品
+    function addProduct() {
+        const name = document.getElementById('prodName').value.trim();
+        const keyword = document.getElementById('prodKeyword').value.trim();
+        const price = document.getElementById('prodPrice').value.trim();
+
+        if (!name || !keyword || !price) {
+            alert('請完整填寫商品名稱、關鍵字與價格再新增！');
+            return;
+        }
+
+        productList.push({ name: name, keyword: keyword, price: price });
+        updateProductDisplay();
+
+        document.getElementById('prodName').value = '';
+        document.getElementById('prodKeyword').value = '';
+        document.getElementById('prodPrice').value = '';
+        document.getElementById('prodName').focus();
+    }
+
+    // 2. 📢 產生純粹的結單公告
+    function generateCloseOrderAnnounce() {
+        const name = document.getElementById('prodName').value.trim() || '【未填寫商品】';
+        const keyword = document.getElementById('prodKeyword').value.trim() || '【未填寫關鍵字】';
+
+        const result = `🚨【 商品結單通知 】🚨
+-
+⚠️ 商品：【 ${name} 】（喊單關鍵字： ${keyword} ）
+⛔ 已經正式截止喊單，系統已關閉收單權限！`;
+
+        document.getElementById('productPreview').innerText = result;
+    }
+
+    // 3. 清空商品名單
+    function clearProducts() {
+        if (confirm('確定要清空已暫存的商品名單嗎？')) {
+            productList = [];
+            updateProductDisplay();
+        }
+    }
+
+    // 4. 渲染多商品累計文案
+    function updateProductDisplay() {
+        if (productList.length === 0) {
+            document.getElementById('productPreview').innerText = `（目前尚未新增任何商品，請在上方欄位輸入並點擊新增）\n-\n📣【唯一正確下單格式】\n👉 請輸入： 關鍵字 + 數量\n⚠️ 格式注意：字體、大小寫務必一模一樣，系統才能成功幫你收單存庫唷！`;
+            return;
+        }
+
+        let prodsText = '';
+        let exampleKeyword = productList[0].keyword;
+
+        productList.forEach((item, index) => {
+            prodsText += `👉 商品：【 ${item.name} 】\n👉 喊單關鍵字： ${item.keyword} \n💰 直播限定炸裂價： $${item.price} 元！立刻上車！\n`;
+            if (index < productList.length - 1) {
+                prodsText += `-\n`;
+            }
+        });
+
+        const result = `${prodsText}-\n📣【唯一正確下單格式】
+👉 請輸入： 關鍵字 + 數量 （例如： ${exampleKeyword}+1 ）
+⚠️ 格式注意：字體、大小寫務必一模一樣，系統才能成功幫你收單存庫唷！`;
+
+        document.getElementById('productPreview').innerText = result;
+    }
+
+    // 5. 更新抽獎文案
+    function updateMonster() {
+        const keyword = document.getElementById('monsterKeyword').value || '【請填寫關鍵字】';
+        const gift = document.getElementById('monsterGift').value || '【請填寫內容】';
+        
+        if(document.getElementById('monsterKeyword').value) {
+            document.getElementById('monsterTitle').innerText = `✨ 抽獎福利：【${keyword}】`;
+        } else {
+            document.getElementById('monsterTitle').innerText = `✨ 抽獎福利`;
+        }
+        
+        const result = `✨【免費抽獎福利來了】✨
+👉 聊天室刷起來：【 ${keyword} 】
+🎁 本輪好禮:  ${gift} 
+-
+🔥 按讚＋公開分享直播，字體打對才有抽獎資格喔！`;
+        
+        document.getElementById('monsterPreview').innerText = result;
+    }
+
+    // 6. 新增得獎者
+    function addWinner() {
+        const gift = document.getElementById('giftName').value.trim();
+        const winner = document.getElementById('winnerName').value.trim();
+        
+        if (!gift || !winner) {
+            alert('請先填寫獎品與得獎者暱稱再新增！');
+            return;
+        }
+        
+        winnerList.unshift({ gift: gift, winner: winner });
+        updateLotteryDisplay();
+        
+        document.getElementById('winnerName').value = '';
+        document.getElementById('winnerName').focus();
+    }
+
+    // 7. 清空所有得獎者
+    function clearWinners() {
+        if (confirm('確定要清空這場直播所有的得獎紀錄嗎？')) {
+            winnerList = [];
+            updateLotteryDisplay();
+        }
+    }
+
+    // 8. 渲染累計中獎名單
+    function updateLotteryDisplay() {
+        if (winnerList.length === 0) {
+            document.getElementById('lotteryPreview').innerText = `✨ 恭喜幸運兒誕生！【得獎名單公佈】\n- \n（目前名單空空如也，請點上方按鈕新增得獎者）\n- \n👉 恭喜中獎！請「主動」聯繫好物基地官方 LINE 客服： @530pdsjq \n⏰ ⚠️ 小編提醒：中獎者請於直播結束後【 3 天內 】私訊客服，逾期視同放棄，機會不等人喔！`;
+            return;
+        }
+        
+        let listText = '';
+        winnerList.forEach((item, index) => {
+            listText += `🎁 獎品內容： ${item.gift} \n👤 得獎者名單： ${item.winner} \n`;
+            if (index < winnerList.length - 1) {
+                listText += `---\n`;
+            }
+        });
+        
+        const result = `✨ 恭喜幸運兒誕生！【得獎名單公佈】
+-
+${listText}-
+👉 恭喜中獎！請「主動」聯繫好物基地官方 LINE 客服： @530pdsjq 
+⏰ ⚠️ 小編提醒：中獎者請於直播結束後【 3 天內 】私訊客服，逾期視同放棄，機會不等人喔！`;
+        
+        document.getElementById('lotteryPreview').innerText = result;
+    }
+
+    // 核心複製功能 (讀取預覽框)
+    function copyTextFromDiv(elementId) {
+        const text = document.getElementById(elementId).innerText;
+        executeCopy(text);
+    }
+
+    // 核心複製功能 (讀取各類輸入框/記事本)
+    function copyTextFromInput(elementId) {
+        const text = document.getElementById(elementId).value;
+        if(!text.trim()){
+            alert('該欄位目前沒有內容可以複製喔！');
+            return;
+        }
+        executeCopy(text);
+    }
+
+    // 執行複製至剪貼簿
+    function executeCopy(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast();
+        }).catch(err => {
+            alert('複製失敗: ' + err);
+        });
+    }
+
+    // 顯示提示
+    function showToast() {
+        const toast = document.getElementById('toast');
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 1200);
+    }
+
+    // 初始化
+    updateProductDisplay();
+    updateMonster();
+    updateLotteryDisplay();
+</script>
+
+</body>
+</html>
